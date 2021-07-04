@@ -1,12 +1,16 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import { NextApiRequest, NextApiResponse } from 'next';
+import nc from 'next-connect';
 
-type Data = {
-  name: string;
-};
+import { resolveHttpError } from '~/middlewares/resolveHttpError';
+import { resolveNoMatch } from '~/middlewares/resolveNoMatch';
 
-export default function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<Data>
-) {
-  res.status(200).json({ name: 'John Doe' });
-}
+const handler = nc<NextApiRequest, NextApiResponse>({
+  onError: resolveHttpError,
+  onNoMatch: resolveNoMatch,
+}).get(async (req, res) => {
+  res.json({
+    hello: 'API',
+  });
+});
+
+export default handler;
